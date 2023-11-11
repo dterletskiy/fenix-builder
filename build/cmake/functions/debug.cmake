@@ -7,6 +7,16 @@
 #                                 Print functions for debug                               #
 #                                                                                         #
 ###########################################################################################
+# Print variable by its name.
+# Parameters:
+#     IN_VARIABLE - (in) variable name
+# Example:
+#     set( FOO "EXTERNAL" )
+#     print_variable( FOO )
+function( print_variable IN_VARIABLE )
+   msg_dbg( "${IN_VARIABLE} = ${${IN_VARIABLE}}" )
+endfunction( )
+
 function( print_environment_variables )
    msg_dbg( "###########################################################################################" )
    msg_dbg( "#                                                                                         #" )
