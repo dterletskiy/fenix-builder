@@ -49,6 +49,9 @@ function( color_message COLOR )
       set( str "${str}${_escape}[${${COLOR}}m" )
    endif( )
 
+   string( TIMESTAMP _TIMESTAMP_ "%Y.%m.%d-%H:%M:%S" )
+   set( str "${str}${_TIMESTAMP_}:   " )
+
    # math( EXPR lastIndex "${ARGC}-1" )
    # foreach( index RANGE 1 ${lastIndex} )
    #    set( arg ${ARGV${index}} )
