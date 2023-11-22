@@ -95,7 +95,7 @@ class Builder:
 
       code += "#pragma once\n";
       code += "\n"
-      code += "#include \"carpc/comm/service/Types.hpp\"\n";
+      code += "#include \"carpc/runtime/comm/service/Types.hpp\"\n";
       for include in self.__interface.includes( ):
          code += "#include \"" + include + "\"\n";
 
@@ -587,7 +587,7 @@ class Builder:
 
       code += "#pragma once\n";
       code += "\n"
-      code += "#include \"carpc/comm/service/experimental/TServer.hpp\"\n";
+      code += "#include \"carpc/runtime/comm/service/experimental/TServer.hpp\"\n";
       code += "#include \"Data.hpp\"\n";
       code += "\n"
 
@@ -748,7 +748,7 @@ class Builder:
 
       code += "#pragma once\n";
       code += "\n"
-      code += "#include \"carpc/comm/service/experimental/TClient.hpp\"\n";
+      code += "#include \"carpc/runtime/comm/service/experimental/TClient.hpp\"\n";
       code += "#include \"Data.hpp\"\n";
       code += "\n"
 

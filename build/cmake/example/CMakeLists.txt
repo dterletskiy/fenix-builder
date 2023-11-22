@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.16 FATAL_ERROR )
 
-carpc_project( APPLICATION )
+fenix_project( APPLICATION )
 
 
 

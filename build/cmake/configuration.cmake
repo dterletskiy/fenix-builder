@@ -10,7 +10,7 @@ set( ROOT_BINARY_DIR ${CMAKE_BINARY_DIR} )
 
 # Root gen directory
 if( NOT DEFINED ROOT_GEN_DIR )
-   set( ROOT_GEN_DIR ${CMAKE_BINARY_DIR}/gen )
+   set( ROOT_GEN_DIR ${ROOT_BINARY_DIR}/gen )
 endif( )
 
 # Root delivery directory
@@ -22,7 +22,7 @@ endif( )
 
 # Python FW directory
 if( NOT DEFINED PFW_DIR )
-   set( PFW_DIR ${CMAKE_SOURCE_DIR}/submodules/dterletskiy/python_fw )
+   set( PFW_DIR ${ROOT_SOURCE_DIR}/submodules/dterletskiy/python_fw )
 endif( )
 
 # Target OS
@@ -34,34 +34,74 @@ endif( )
 
 
 # Enable framework system tracin
-carpc_is_on_off( SYS_TRACE SYS_TRACE ON )
+fenix_is_on_off(
+      SYS_TRACE
+      SYS_TRACE
+      FENIX_POSITIVE_VALUE
+   )
 
 # Enable application tracing
-carpc_is_on_off( MSG_TRACE MSG_TRACE ON )
+fenix_is_on_off(
+      MSG_TRACE
+      MSG_TRACE
+      FENIX_POSITIVE_VALUE
+   )
 
 # Enable colored tracing for console
-carpc_is_on_off( COLORED_TRACE COLORED_TRACE ON )
+fenix_is_on_off(
+      COLORED_TRACE
+      COLORED_TRACE
+      FENIX_POSITIVE_VALUE
+   )
 
 # Enable dlt tracing
-carpc_is_on_off( DLT_TRACE DLT_TRACE ON )
+fenix_is_on_off(
+      DLT_TRACE
+      DLT_TRACE
+      FENIX_POSITIVE_VALUE
+   )
 
 # Enable dlt tracing
-carpc_is_on_off( DEBUG_STREAM DEBUG_STREAM OFF )
+fenix_is_on_off(
+      DEBUG_STREAM
+      DEBUG_STREAM
+      FENIX_NEGATIVE_VALUE
+   )
 
 # Enable memory allocator hooks
-carpc_is_on_off( MEMORY_HOOK MEMORY_HOOK OFF )
+fenix_is_on_off(
+      MEMORY_HOOK
+      MEMORY_HOOK
+      FENIX_NEGATIVE_VALUE
+   )
 
 # Enable instrumental functionality
-carpc_is_on_off( INSTRUMENTAL INSTRUMENTAL OFF )
+fenix_is_on_off(
+      INSTRUMENTAL
+      INSTRUMENTAL
+      FENIX_NEGATIVE_VALUE
+   )
 
 # Enable debug information
-carpc_is_on_off( USE_DEBUG USE_DEBUG OFF )
+fenix_is_on_off(
+      USE_DEBUG
+      USE_DEBUG
+      FENIX_NEGATIVE_VALUE
+   )
 
 # Enable goolgle protobuf
-carpc_is_on_off( USE_GPB USE_GPB ON )
+fenix_is_on_off(
+      USE_GPB
+      USE_GPB
+      FENIX_POSITIVE_VALUE
+   )
 
 # Enable RTTI
-carpc_is_on_off( USE_RTTI USE_RTTI ON )
+fenix_is_on_off(
+      USE_RTTI
+      USE_RTTI
+      FENIX_POSITIVE_VALUE
+   )
 
 
 

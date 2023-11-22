@@ -78,7 +78,7 @@ class Builder:
 
       code += "#pragma once\n";
       code += "\n"
-      code += "#include \"carpc/common/IPC.hpp\"\n"
+      code += "#include \"carpc/base/common/IPC.hpp\"\n"
       code += "\n"
 
 

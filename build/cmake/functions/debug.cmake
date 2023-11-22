@@ -14,7 +14,7 @@
 #     set( FOO "EXTERNAL" )
 #     print_variable( FOO )
 function( print_variable IN_VARIABLE )
-   msg_dbg( "${IN_VARIABLE} = ${${IN_VARIABLE}}" )
+   msg_vrb( "${IN_VARIABLE} = ${${IN_VARIABLE}}" )
 endfunction( )
 
 function( print_environment_variables )
@@ -61,57 +61,62 @@ function( print_variables )
    msg_dbg( "###########################################################################################" )
 
    # [cmake] Name of the project given to the project command.
-   msg_vrb( "PROJECT_NAME = " ${PROJECT_NAME} )
+   print_variable( PROJECT_NAME )
 
    # [cmake] Path to top of source tree. Same as CMAKE_SOURCE_DIR.
-   msg_vrb( "CMAKE_HOME_DIRECTORY = " ${CMAKE_HOME_DIRECTORY} )
+   print_variable( CMAKE_HOME_DIRECTORY )
+
    # [cmake] The path to the top level of the source tree.
-   msg_vrb( "CMAKE_SOURCE_DIR = " ${CMAKE_SOURCE_DIR} )
+   print_variable( CMAKE_SOURCE_DIR )
    # [cmake] The path to the source directory currently being processed.
-   msg_vrb( "CMAKE_CURRENT_SOURCE_DIR = " ${CMAKE_CURRENT_SOURCE_DIR} )
-   # [cmake] The path to the top level of the build tree.
-   msg_vrb( "CMAKE_BINARY_DIR = " ${CMAKE_BINARY_DIR} )
-   # [cmake] The path to the binary directory currently being processed.
-   msg_vrb( "CMAKE_CURRENT_BINARY_DIR = " ${CMAKE_CURRENT_BINARY_DIR} )
-   # [cmake] Install directory used by install().
-   msg_vrb( "CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
-
-   # [cmake] This is the source directory for project.
-   msg_vrb( "PROJECT_SOURCE_DIR = " ${PROJECT_SOURCE_DIR} )
+   print_variable( CMAKE_CURRENT_SOURCE_DIR )
    # [cmake] Top level source directory for the named project.
-   msg_vrb( "${PROJECT_NAME}_SOURCE_DIR = " ${${PROJECT_NAME}_SOURCE_DIR} )
-   # [cmake] Full path to build directory for project.
-   msg_vrb( "PROJECT_BINARY_DIR = " ${PROJECT_BINARY_DIR} )
+   print_variable( ${PROJECT_NAME}_SOURCE_DIR )
+   # [cmake] This is the source directory for project.
+   print_variable( PROJECT_SOURCE_DIR )
+
+   # [cmake] The path to the top level of the build tree.
+   print_variable( CMAKE_BINARY_DIR )
+   # [cmake] The path to the binary directory currently being processed.
+   print_variable( CMAKE_CURRENT_BINARY_DIR )
    # [cmake] Top level binary directory for the named project.
-   msg_vrb( "${PROJECT_NAME}_BINARY_DIR = " ${${PROJECT_NAME}_BINARY_DIR} )
-   # [carpc] Full path to generate files directory for project.
-   msg_vrb( "PROJECT_GEN_DIR = " ${PROJECT_GEN_DIR} )
-   # [carpc] Top level generate directory for the named project.
-   msg_vrb( "${PROJECT_NAME}_GEN_DIR = " ${${PROJECT_NAME}_GEN_DIR} )
+   print_variable( ${PROJECT_NAME}_BINARY_DIR )
+   # [cmake] Full path to build directory for project.
+   print_variable( PROJECT_BINARY_DIR )
 
-   # [carpc]
-   msg_vrb( "ROOT_SOURCE_DIR = " ${ROOT_SOURCE_DIR} )
-   # [carpc]
-   msg_vrb( "ROOT_BINARY_DIR = " ${ROOT_BINARY_DIR} )
-   # [carpc]
-   msg_vrb( "ROOT_DELIVERY_DIR = " ${ROOT_DELIVERY_DIR} )
-   # [carpc]
-   msg_vrb( "ROOT_GEN_DIR = " ${ROOT_GEN_DIR} )
-   # [carpc]
-   msg_vrb( "CARPC_INCLUDE_DIR = " ${CARPC_INCLUDE_DIR} )
-   # [carpc]
-   msg_vrb( "CARPC_LIB_DIR = " ${CARPC_LIB_DIR} )
+   # [cmake] Install directory used by install().
+   print_variable( CMAKE_INSTALL_PREFIX )
 
-   # [carpc] Name of the target given to the project command.
-   msg_vrb( "PROJECT_TARGET_NAME = " ${PROJECT_TARGET_NAME} )
+   # [fenix] Full path to generate files directory for project.
+   print_variable( PROJECT_GEN_DIR )
+   # [fenix] Top level generate directory for the named project.
+   print_variable( FENIX_CURRENT_GEN_DIR )
+   # [fenix] Top level generate directory for the named project.
+   print_variable( ${PROJECT_NAME}_GEN_DIR )
 
-   # [carpc] List of source files in the project.
+   # [fenix]
+   print_variable( ROOT_SOURCE_DIR )
+   # [fenix]
+   print_variable( ROOT_BINARY_DIR )
+   # [fenix]
+   print_variable( ROOT_DELIVERY_DIR )
+   # [fenix]
+   print_variable( ROOT_GEN_DIR )
+   # [fenix]
+   print_variable( CARPC_INCLUDE_DIR )
+   # [fenix]
+   print_variable( CARPC_LIB_DIR )
+
+   # [fenix] Name of the target given to the project command.
+   print_variable( PROJECT_TARGET_NAME )
+
+   # [fenix] List of source files in the project.
    # It is generated during calling function "find_files_by_ext".
-   msg_vrb( "PROJECT_SOURCE_FILES = " ${PROJECT_SOURCE_FILES} )
-   msg_vrb( "PROJECT_GEN_FILES = " ${PROJECT_GEN_FILES} )
-   msg_vrb( "PROJECT_GEN_ADL_FILES = " ${PROJECT_GEN_ADL_FILES} )
-   msg_vrb( "PROJECT_GEN_IDL_FILES = " ${PROJECT_GEN_IDL_FILES} )
-   msg_vrb( "PROJECT_GEN_PROTO_FILES = " ${PROJECT_GEN_PROTO_FILES} )
+   print_variable( PROJECT_SOURCE_FILES )
+   print_variable( PROJECT_GEN_FILES )
+   print_variable( PROJECT_GEN_ADL_FILES )
+   print_variable( PROJECT_GEN_IDL_FILES )
+   print_variable( PROJECT_GEN_PROTO_FILES )
 
    msg_dbg( "###########################################################################################" )
    msg_dbg( "#                                                                                         #" )
