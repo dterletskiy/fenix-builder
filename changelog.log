@@ -1,3 +1,7 @@
+version 0.1.5
+   - Temporary added CARPC framework what was split to separate libraries.
+   - Temporary added CARPC examples and tutorial what are compilable according to new CARPC framework structure.
+
 version 0.1.4
    - Added external git repository "https://github.com/dterletskiy/python_fw.git" as submodule.
 

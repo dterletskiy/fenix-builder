@@ -1,0 +1,21 @@
+author: dterletskiy;
+version: 1.0.0;
+
+
+
+component: OnOff
+{
+   include: "imp/hmi/components/onoff/Component.hpp";
+   creator: hmi::components::onoff::Component::creator;
+};
+
+thread: OnOff_Service
+{
+   components: OnOff;
+   watchdog: 5;
+};
+
+application: hmi
+{
+   threads: OnOff_Service;
+};

@@ -1,0 +1,11 @@
+author: dterletskiy;
+interface: hmi;
+version: 1.0.0;
+
+import: "api/service/navigation/base.ddl";
+
+ipc: false;
+
+method: init( size_t x, size_t y ) -> ( bool result );
+
+method: run( navigation::State state );

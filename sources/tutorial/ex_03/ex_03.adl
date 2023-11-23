@@ -1,0 +1,33 @@
+author: dterletskiy;
+version: 1.0.0;
+
+
+
+component: Component_OnOff
+{
+   include: "imp/app/components/OnOff/Component.hpp";
+   creator: application::components::onoff::Component::creator;
+};
+
+component: Component_Driver
+{
+   include: "imp/app/components/Driver/Component.hpp";
+   creator: application::components::driver::Component::creator;
+};
+
+thread: Thread_OnOff
+{
+   components: Component_OnOff;
+   watchdog: 5;
+};
+
+thread: Thread_Driver
+{
+   components: Component_Driver;
+   watchdog: 5;
+};
+
+application: example_03
+{
+   threads: Thread_OnOff, Thread_Driver;
+};

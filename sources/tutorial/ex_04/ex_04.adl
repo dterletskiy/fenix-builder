@@ -1,0 +1,21 @@
+author: dterletskiy;
+version: 1.0.0;
+
+
+
+component: OnOff
+{
+   include: "imp/app/components/OnOff/Component.hpp";
+   creator: application::components::onoff::Component::creator;
+};
+
+thread: OnOff_Thread
+{
+   components: OnOff;
+   watchdog: 5;
+};
+
+application: example_04
+{
+   threads: OnOff_Thread;
+};
