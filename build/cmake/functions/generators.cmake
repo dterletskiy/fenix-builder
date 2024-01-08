@@ -89,7 +89,7 @@ function( generate_xdl XDL_FILE GENERATED_FILES )
    # *.xdl location directory
    get_filename_component( XDL_FILE_DIR ${XDL_FILE} DIRECTORY )
    # *.xdl generated destination directory
-   string( REPLACE "${ROOT_SOURCE_DIR}" "${ROOT_GEN_DIR}" XDL_GEN_DIR "${XDL_FILE_DIR}/${XDL_FILE_NAME}/" )
+   string( REPLACE "${PROJECT_SOURCE_DIR}" "${PROJECT_GEN_DIR}" XDL_GEN_DIR "${XDL_FILE_DIR}/${XDL_FILE_NAME}/" )
 
    msg_inf( "processing xdl type: " ${XDL_FILE_EXTENTION} )
 
@@ -185,7 +185,7 @@ function( generate_gpb PROTO_FILE GENERATED_FILES )
    # *.xdl location directory
    get_filename_component( PROTO_FILE_DIR ${PROTO_FILE} DIRECTORY )
    # *.xdl generated destination directory
-   string( REPLACE "${ROOT_SOURCE_DIR}" "${ROOT_GEN_DIR}" PROTO_GEN_DIR "${PROTO_FILE_DIR}/" )
+   string( REPLACE "${PROJECT_SOURCE_DIR}" "${PROJECT_GEN_DIR}" PROTO_GEN_DIR "${PROTO_FILE_DIR}/" )
 
    file( MAKE_DIRECTORY ${PROTO_GEN_DIR} )
 
@@ -244,7 +244,7 @@ function( generate_plantuml PLANTUML_FILE GENERATED_FILES )
    # *.plantuml location directory
    get_filename_component( PLANTUML_FILE_DIR ${PLANTUML_FILE} DIRECTORY )
 
-   string( REPLACE "${ROOT_SOURCE_DIR}" "${ROOT_GEN_DIR}" PLANTUML_GEN_DIR ${PLANTUML_FILE_DIR} )
+   string( REPLACE "${PROJECT_SOURCE_DIR}" "${PROJECT_GEN_DIR}" PLANTUML_GEN_DIR ${PLANTUML_FILE_DIR} )
    set( PLANTUML_GEN_FILES ${TEMPLATE_PLANTUML_GEN_FILES} )
    list( TRANSFORM PLANTUML_GEN_FILES PREPEND "${PLANTUML_FILE_NAME}" )
    list( TRANSFORM PLANTUML_GEN_FILES PREPEND "${PLANTUML_GEN_DIR}/" )
