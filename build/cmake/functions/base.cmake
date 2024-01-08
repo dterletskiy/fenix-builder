@@ -56,6 +56,11 @@ function( fenix_get_all_targets OUT_TARGETS )
    set( LOCAL_TARGETS )
    __fenix_all_targets_recursive__( LOCAL_TARGETS ${CMAKE_CURRENT_SOURCE_DIR} )
    set( ${OUT_TARGETS} ${LOCAL_TARGETS} PARENT_SCOPE )
+
+   msg_dbg( "List of targets:" )
+   foreach( LOCAL_TARGET IN LISTS LOCAL_TARGETS )
+      msg_inf( "   - " ${LOCAL_TARGET} )
+   endforeach( )
 endfunction( )
 
 # Helper macro for "fenix_get_all_targets" function
