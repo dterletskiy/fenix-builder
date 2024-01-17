@@ -161,3 +161,41 @@ function( __fenix_setup_target_name__ IN_TARGET_NAME )
    set( PROJECT_TARGET_NAME  "${IN_TARGET_NAME}" CACHE INTERNAL "PROJECT_TARGET_NAME" )
    set( ${PROJECT_NAME}_TARGET_NAME  "${IN_TARGET_NAME}" CACHE INTERNAL "${PROJECT_NAME}_TARGET_NAME" )
 endfunction( )
+
+
+
+
+
+# function( experimental )
+#    set( OPTIONS )
+#    set( ONE_VALUE_ARGS NAME RESULT )
+#    set( MULTI_VALUE_ARGS TARGETS )
+#    cmake_parse_arguments( __LOCAL "${OPTIONS}" "${ONE_VALUE_ARGS}" "${MULTI_VALUE_ARGS}" ${ARGN} )
+
+#    set( LOCAL_RESULT "" )
+
+#    print_variable( __LOCAL_NAME )
+#    msg_dbg( "__LOCAL_TARGETS:" )
+#    foreach( __LOCAL_TARGET IN LISTS __LOCAL_TARGETS )
+#       msg_inf( "   - " ${__LOCAL_TARGET} )
+#       list( APPEND LOCAL_RESULT ${__LOCAL_TARGET} )
+#    endforeach( )
+
+#    set( ${__LOCAL_RESULT} ${LOCAL_RESULT} PARENT_SCOPE )
+# endfunction( )
+
+# set( LIST "" )
+# list( APPEND LIST XXX YYY ZZZ )
+
+# set( RESULT_LIST "" )
+# print_variable( RESULT_LIST )
+
+# experimental(
+#    NAME tracing
+#    RESULT RESULT_LIST
+#    TARGETS AAA BBB
+#    TARGETS CCC
+#    TARGETS ${LIST}
+# )
+
+# print_variable( RESULT_LIST )
