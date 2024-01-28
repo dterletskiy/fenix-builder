@@ -49,6 +49,10 @@ generate_plantumls( "${PLANTUML_FILES}" PROJECT_GEN_PLANTUML_FILES )
 #                                                                                         #
 ###########################################################################################
 find_files_by_ext( PROJECT_SOURCE_FILES ${PROJECT_SOURCE_DIR} "${EXTENTIONS_CPP_SRC}" )
+if( ${OS_TARGET} EQUAL ${OS_ANDROID} )
+   list( REMOVE_ITEM PROJECT_SOURCE_FILES ${PROJECT_SOURCE_DIR}/imp/carpc/oswrappers/Spinlock.cpp )
+   list( REMOVE_ITEM PROJECT_SOURCE_FILES ${PROJECT_SOURCE_DIR}/imp/carpc/oswrappers/linux/backtrace.cpp )
+endif( )
 
 
 
