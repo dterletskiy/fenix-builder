@@ -63,7 +63,6 @@ add_executable(
       ${PROJECT_SOURCE_FILES}
    )
 
-target_link_libraries( ${PROJECT_TARGET_NAME} ${TRACING_TARGET_NAME} )
 target_link_libraries( ${PROJECT_TARGET_NAME} ${RUNTIME_TARGET_NAME} )
 if( MEMORY_HOOK )
    target_link_libraries( ${PROJECT_TARGET_NAME} ${HOOKS_TARGET_NAME} )

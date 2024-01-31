@@ -92,10 +92,6 @@ add_executable(
    ${PROJECT_GEN_PROTO_FILES}
 )
 
-target_link_libraries( ${PROJECT_TARGET_NAME} ${TRACING_TARGET_NAME} )
-target_link_libraries( ${PROJECT_TARGET_NAME} ${BASE_TARGET_NAME} )
-target_link_libraries( ${PROJECT_TARGET_NAME} ${OSW_TARGET_NAME} )
-target_link_libraries( ${PROJECT_TARGET_NAME} ${TOOLS_TARGET_NAME} )
 target_link_libraries( ${PROJECT_TARGET_NAME} ${RUNTIME_TARGET_NAME} )
 target_link_libraries( ${PROJECT_TARGET_NAME} ${SERVICE_TARGET_NAME} )
 if( MEMORY_HOOK )
