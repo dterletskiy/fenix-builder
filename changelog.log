@@ -1,3 +1,8 @@
+version 0.1.8
+   - Build system refactoring:
+      - implemented 'init.cmake'
+      - refactored root 'CMakeLists.txt'
+
 version 0.1.7
    - Cmakefiles refactoring: removed unneeded "target_link_libraries".
 
