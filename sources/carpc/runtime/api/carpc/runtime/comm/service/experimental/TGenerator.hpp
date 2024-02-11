@@ -47,7 +47,7 @@ namespace carpc::service::experimental {
       {
          using tEvent               = typename Method::Event;
          using tEventConsumer       = typename Method::Consumer;
-         using tEventUserSignature  = typename Method::UserSignature;
+         using tEventUserSignature  = typename Method::UserSignature; // => TYPES::method::tID
          using tEventID             = typename Method::UserSignature::tID; // => TYPES::method::tID
          using tEventData           = typename Method::Data; // => MethodData
 

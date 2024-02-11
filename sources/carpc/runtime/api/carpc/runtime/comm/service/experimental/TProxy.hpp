@@ -11,11 +11,11 @@
 
 namespace carpc::service::experimental::__private__ {
 
-   template< typename TYPES >
+   template< typename GENERATOR >
       class TServer;
-   template< typename TYPES >
+   template< typename GENERATOR >
       class TProxy;
-   template< typename TYPES >
+   template< typename GENERATOR >
       class TClient;
 
 } // namespace carpc::service::experimental::__private__
@@ -24,14 +24,14 @@ namespace carpc::service::experimental::__private__ {
 
 namespace carpc::service::experimental::__private_proxy__ {
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    class MethodProcessor
    {
-      using tProxy = __private__::TProxy< TYPES >;
-      using tClient = __private__::TClient< TYPES >;
+      using tProxy = __private__::TProxy< GENERATOR >;
+      using tClient = __private__::TClient< GENERATOR >;
 
       using tSeqIDClientMap = std::map< comm::sequence::ID, tClient* >;
-      using tRequestMap = std::map< typename TYPES::method::tEventID, tSeqIDClientMap >;
+      using tRequestMap = std::map< typename GENERATOR::method::tEventID, tSeqIDClientMap >;
 
       public:
          MethodProcessor( tProxy* );
@@ -40,7 +40,7 @@ namespace carpc::service::experimental::__private_proxy__ {
       public:
          template< typename tRequestData, typename... Args >
             const comm::sequence::ID request( tClient* p_client, const Args&... args );
-         const bool process( const typename TYPES::method::tEvent& );
+         const bool process( const typename GENERATOR::method::tEvent& );
 
       private:
          comm::sequence::ID   m_seq_id = comm::sequence::ID::zero;
@@ -50,28 +50,28 @@ namespace carpc::service::experimental::__private_proxy__ {
 
 
 
-   template< typename TYPES >
-   MethodProcessor< TYPES >::MethodProcessor( tProxy* p_proxy )
+   template< typename GENERATOR >
+   MethodProcessor< GENERATOR >::MethodProcessor( tProxy* p_proxy )
       : mp_proxy( p_proxy )
    {
    }
 
-   template< typename TYPES >
-   void MethodProcessor< TYPES >::reset( )
+   template< typename GENERATOR >
+   void MethodProcessor< GENERATOR >::reset( )
    {
       for( auto item : m_map )
          item.second.clear( );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tRequestData, typename... Args >
-   const comm::sequence::ID MethodProcessor< TYPES >::request( tClient* p_client, const Args&... args )
+   const comm::sequence::ID MethodProcessor< GENERATOR >::request( tClient* p_client, const Args&... args )
    {
        auto event_id_iterator = m_map.emplace( tRequestData::ID, tSeqIDClientMap{ } ).first;
 
       // If response exists for current request
       // if( true == tRequestData::IS_RESPONSE )
-      if( true == TYPES::T::method::has_response( tRequestData::ID ) )
+      if( true == GENERATOR::T::method::has_response( tRequestData::ID ) )
       {
          auto& client_map = event_id_iterator->second;
 
@@ -89,9 +89,9 @@ namespace carpc::service::experimental::__private_proxy__ {
          // and current proxy was not subscribed for corresponding responses of mentioned request.
          if( 1 == client_map.size( ) )
          {
-            TYPES::method::tEvent::set_notification(
+            GENERATOR::method::tEvent::set_notification(
                mp_proxy,
-               typename TYPES::method::tEventUserSignature(
+               typename GENERATOR::method::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   tRequestData::ID,
                   carpc::service::eType::RESPONSE,
@@ -99,9 +99,9 @@ namespace carpc::service::experimental::__private_proxy__ {
                   mp_proxy->id( )
                )
             );
-            TYPES::method::tEvent::set_notification(
+            GENERATOR::method::tEvent::set_notification(
                mp_proxy,
-               typename TYPES::method::tEventUserSignature(
+               typename GENERATOR::method::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   tRequestData::ID,
                   carpc::service::eType::BUSY,
@@ -113,7 +113,7 @@ namespace carpc::service::experimental::__private_proxy__ {
       }
 
       // Preparing and sending request event
-      typename TYPES::method::tEventUserSignature event_signature(
+      typename GENERATOR::method::tEventUserSignature event_signature(
             mp_proxy->signature( ).role( ),
             tRequestData::ID,
             carpc::service::eType::REQUEST,
@@ -121,16 +121,16 @@ namespace carpc::service::experimental::__private_proxy__ {
             mp_proxy->server( ).id( ),
             m_seq_id
          );
-      typename TYPES::method::tEventData data( std::make_shared< tRequestData >( args... ) );
-      TYPES::method::tEvent::create_send( event_signature, data, mp_proxy->server( ).context( ) );
+      typename GENERATOR::method::tEventData data( std::make_shared< tRequestData >( args... ) );
+      GENERATOR::method::tEvent::create_send( event_signature, data, mp_proxy->server( ).context( ) );
 
       return m_seq_id;
    }
 
-   template< typename TYPES >
-   const bool MethodProcessor< TYPES >::process( const typename TYPES::method::tEvent& event )
+   template< typename GENERATOR >
+   const bool MethodProcessor< GENERATOR >::process( const typename GENERATOR::method::tEvent& event )
    {
-      const typename TYPES::method::tEventID event_id = event.info( ).id( );
+      const typename GENERATOR::method::tEventID event_id = event.info( ).id( );
       const comm::sequence::ID seq_id = event.info( ).seq_id( );
 
       auto event_id_iterator = m_map.find( event_id );
@@ -148,11 +148,11 @@ namespace carpc::service::experimental::__private_proxy__ {
       // This means current proxy is not interested in following response notifications
       // related to current request.
       // This also makes sence only in case if response is defined for current method.
-      if( 1 == client_map.size( ) && true == TYPES::T::method::has_response( event_id ) )
+      if( 1 == client_map.size( ) && true == GENERATOR::T::method::has_response( event_id ) )
       {
-         TYPES::method::tEvent::clear_notification(
+         GENERATOR::method::tEvent::clear_notification(
                mp_proxy,
-               typename TYPES::method::tEventUserSignature(
+               typename GENERATOR::method::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   event_id,
                   carpc::service::eType::RESPONSE,
@@ -160,9 +160,9 @@ namespace carpc::service::experimental::__private_proxy__ {
                   mp_proxy->id( )
                )
             );
-         TYPES::method::tEvent::clear_notification(
+         GENERATOR::method::tEvent::clear_notification(
                mp_proxy,
-               typename TYPES::method::tEventUserSignature(
+               typename GENERATOR::method::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   event_id,
                   carpc::service::eType::BUSY,
@@ -190,25 +190,25 @@ namespace carpc::service::experimental::__private_proxy__ {
 
 namespace carpc::service::experimental::__private_proxy__ {
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    struct AttributeDB
    {
-      using tClient = __private__::TClient< TYPES >;
+      using tClient = __private__::TClient< GENERATOR >;
       using tClientsSet = std::set< tClient* >;
 
       tClientsSet                                                 m_client_set;
-      std::shared_ptr< typename TYPES::attribute::tEventData >    mp_event_data = nullptr;
+      std::shared_ptr< typename GENERATOR::attribute::tEventData >    mp_event_data = nullptr;
    };
 
 
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    class AttributeProcessor
    {
-      using tProxy = __private__::TProxy< TYPES >;
-      using tClient = __private__::TClient< TYPES >;
+      using tProxy = __private__::TProxy< GENERATOR >;
+      using tClient = __private__::TClient< GENERATOR >;
       using tClientsSet = std::set< tClient* >;
-      using tAttributeDB = AttributeDB< TYPES >;
+      using tAttributeDB = AttributeDB< GENERATOR >;
 
       public:
          AttributeProcessor( tProxy* );
@@ -219,42 +219,42 @@ namespace carpc::service::experimental::__private_proxy__ {
             const bool subscribe( tClient* );
          template< typename tAttributeData >
             const bool unsubscribe( tClient* );
-         const bool process( const typename TYPES::attribute::tEvent& );
+         const bool process( const typename GENERATOR::attribute::tEvent& );
 
       private:
-         std::map< typename TYPES::attribute::tEventID, tAttributeDB >  m_map;
+         std::map< typename GENERATOR::attribute::tEventID, tAttributeDB >  m_map;
          tProxy*                                                        mp_proxy = nullptr;
    };
 
 
 
-   template< typename TYPES >
-   AttributeProcessor< TYPES >::AttributeProcessor( tProxy* p_proxy )
+   template< typename GENERATOR >
+   AttributeProcessor< GENERATOR >::AttributeProcessor( tProxy* p_proxy )
       : mp_proxy( p_proxy )
    {
    }
 
-   template< typename TYPES >
-   void AttributeProcessor< TYPES >::reset( )
+   template< typename GENERATOR >
+   void AttributeProcessor< GENERATOR >::reset( )
    {
       for( auto item : m_map )
          item.second = tAttributeDB{ };
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool AttributeProcessor< TYPES >::subscribe( tClient* p_client )
+   const bool AttributeProcessor< GENERATOR >::subscribe( tClient* p_client )
    {
       auto event_id_iterator = m_map.emplace( tAttributeData::ID, tAttributeDB{ } ).first;
 
-      // In clients_set is empty this means current proxy is not subscribed
+      // If clients_set is empty this means current proxy is not subscribed
       // for corresponding attribute notification
       tClientsSet& clients_set = event_id_iterator->second.m_client_set;
       if( clients_set.empty( ) )
       {
-         TYPES::attribute::tEvent::set_notification(
+         GENERATOR::attribute::tEvent::set_notification(
                mp_proxy,
-               typename TYPES::attribute::tEventUserSignature(
+               typename GENERATOR::attribute::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   tAttributeData::ID,
                   carpc::service::eType::NOTIFICATION,
@@ -262,8 +262,8 @@ namespace carpc::service::experimental::__private_proxy__ {
                   mp_proxy->id( )
                )
             );
-         TYPES::attribute::tEvent::create_send(
-               typename TYPES::attribute::tEventUserSignature(
+         GENERATOR::attribute::tEvent::create_send(
+               typename GENERATOR::attribute::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   tAttributeData::ID,
                   carpc::service::eType::SUBSCRIBE,
@@ -279,8 +279,8 @@ namespace carpc::service::experimental::__private_proxy__ {
       {
          SYS_VRB( "having cached attribute event" );
 
-         auto p_event = TYPES::attribute::tEvent::create(
-               typename TYPES::attribute::tEventUserSignature(
+         auto p_event = GENERATOR::attribute::tEvent::create(
+               typename GENERATOR::attribute::tEventUserSignature(
                      mp_proxy->signature( ).role( ),
                      tAttributeData::ID,
                      carpc::service::eType::NOTIFICATION
@@ -294,9 +294,9 @@ namespace carpc::service::experimental::__private_proxy__ {
       return true;
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool AttributeProcessor< TYPES >::unsubscribe( tClient* p_client )
+   const bool AttributeProcessor< GENERATOR >::unsubscribe( tClient* p_client )
    {
       auto event_id_iterator = m_map.find( tAttributeData::ID );
       if( m_map.end( ) == event_id_iterator )
@@ -309,9 +309,9 @@ namespace carpc::service::experimental::__private_proxy__ {
       clients_set.erase( p_client );
       if( clients_set.empty( ) )
       {
-         TYPES::attribute::tEvent::clear_notification(
+         GENERATOR::attribute::tEvent::clear_notification(
             mp_proxy,
-            typename TYPES::attribute::tEventUserSignature(
+            typename GENERATOR::attribute::tEventUserSignature(
                   mp_proxy->signature( ).role( ),
                   tAttributeData::ID,
                   carpc::service::eType::NOTIFICATION,
@@ -319,8 +319,8 @@ namespace carpc::service::experimental::__private_proxy__ {
                   mp_proxy->id( )
                )
          );
-         TYPES::attribute::tEvent::create_send(
-            typename TYPES::attribute::tEventUserSignature(
+         GENERATOR::attribute::tEvent::create_send(
+            typename GENERATOR::attribute::tEventUserSignature(
                mp_proxy->signature( ).role( ),
                tAttributeData::ID,
                carpc::service::eType::UNSUBSCRIBE,
@@ -335,10 +335,10 @@ namespace carpc::service::experimental::__private_proxy__ {
       return true;
    }
 
-   template< typename TYPES >
-   const bool AttributeProcessor< TYPES >::process( const typename TYPES::attribute::tEvent& event )
+   template< typename GENERATOR >
+   const bool AttributeProcessor< GENERATOR >::process( const typename GENERATOR::attribute::tEvent& event )
    {
-      const typename TYPES::attribute::tEventID event_id = event.info( ).id( );
+      const typename GENERATOR::attribute::tEventID event_id = event.info( ).id( );
 
       auto event_id_iterator = m_map.find( event_id );
       if( m_map.end( ) == event_id_iterator )
@@ -363,16 +363,16 @@ namespace carpc::service::experimental::__private_proxy__ {
 
 namespace carpc::service::experimental::__private__ {
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    class TProxy
       : public IProxy
-      , public TYPES::method::tEventConsumer
-      , public TYPES::attribute::tEventConsumer
+      , public GENERATOR::method::tEventConsumer
+      , public GENERATOR::attribute::tEventConsumer
    {
-      using tClient = TClient< TYPES >;
-      using tProxy = TProxy< TYPES >;
-      using tMethodProcessor = __private_proxy__::MethodProcessor< TYPES >;
-      using tAttributeProcessor = __private_proxy__::AttributeProcessor< TYPES >;
+      using tClient = TClient< GENERATOR >;
+      using tProxy = TProxy< GENERATOR >;
+      using tMethodProcessor = __private_proxy__::MethodProcessor< GENERATOR >;
+      using tAttributeProcessor = __private_proxy__::AttributeProcessor< GENERATOR >;
 
       private:
          TProxy( const carpc::async::tAsyncTypeID&, const std::string&, const bool );
@@ -388,8 +388,8 @@ namespace carpc::service::experimental::__private__ {
          void disconnected( ) override final { }
 
       private:
-         void process_event( const typename TYPES::method::tEvent& ) override final;
-         void process_event( const typename TYPES::attribute::tEvent& ) override final;
+         void process_event( const typename GENERATOR::method::tEvent& ) override final;
+         void process_event( const typename GENERATOR::attribute::tEvent& ) override final;
 
       public:
          template< typename tRequestData, typename... Args >
@@ -399,9 +399,9 @@ namespace carpc::service::experimental::__private__ {
          template< typename tAttributeData >
             const bool unsubscribe( tClient* );
          template< typename tMethodData >
-            const tMethodData* get_event_data( const typename TYPES::method::tEvent& event );
+            const tMethodData* get_event_data( const typename GENERATOR::method::tEvent& event );
          template< typename tAttributeData >
-            const tAttributeData* get_event_data( const typename TYPES::attribute::tEvent& event );
+            const tAttributeData* get_event_data( const typename GENERATOR::attribute::tEvent& event );
 
       private:
          tMethodProcessor     m_method_processor;
@@ -410,28 +410,28 @@ namespace carpc::service::experimental::__private__ {
 
 
 
-   template< typename TYPES >
-   TProxy< TYPES >::TProxy( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
+   template< typename GENERATOR >
+   TProxy< GENERATOR >::TProxy( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
       : IProxy( interface_type_id, role_name, is_import )
-      , TYPES::method::tEventConsumer( )
-      , TYPES::attribute::tEventConsumer( )
+      , GENERATOR::method::tEventConsumer( )
+      , GENERATOR::attribute::tEventConsumer( )
       , m_method_processor( this )
       , m_attribute_processor( this )
    {
    }
 
-   template< typename TYPES >
-   TProxy< TYPES >::~TProxy( )
+   template< typename GENERATOR >
+   TProxy< GENERATOR >::~TProxy( )
    {
-      TYPES::method::tEvent::clear_all_notifications( this );
-      TYPES::attribute::tEvent::clear_all_notifications( this );
+      GENERATOR::method::tEvent::clear_all_notifications( this );
+      GENERATOR::attribute::tEvent::clear_all_notifications( this );
    }
 
-   template< typename TYPES >
-   thread_local TProxy< TYPES >* TProxy< TYPES >::sp_proxy = nullptr;
+   template< typename GENERATOR >
+   thread_local TProxy< GENERATOR >* TProxy< GENERATOR >::sp_proxy = nullptr;
 
-   template< typename TYPES >
-   TProxy< TYPES >* TProxy< TYPES >::create( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
+   template< typename GENERATOR >
+   TProxy< GENERATOR >* TProxy< GENERATOR >::create( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
    {
       if( nullptr != sp_proxy )
       {
@@ -456,37 +456,37 @@ namespace carpc::service::experimental::__private__ {
       return sp_proxy;
    }
 
-   template< typename TYPES >
-   void TProxy< TYPES >::connected( const Address& server_address )
+   template< typename GENERATOR >
+   void TProxy< GENERATOR >::connected( const Address& server_address )
    {
       m_method_processor.reset( );
       m_attribute_processor.reset( );
    }
 
-   template< typename TYPES >
-   void TProxy< TYPES >::disconnected( const Address& server_address )
+   template< typename GENERATOR >
+   void TProxy< GENERATOR >::disconnected( const Address& server_address )
    {
       m_method_processor.reset( );
       m_attribute_processor.reset( );
    }
 
-   template< typename TYPES >
-   void TProxy< TYPES >::process_event( const typename TYPES::method::tEvent& event )
+   template< typename GENERATOR >
+   void TProxy< GENERATOR >::process_event( const typename GENERATOR::method::tEvent& event )
    {
       SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
       m_method_processor.process( event );
    }
 
-   template< typename TYPES >
-   void TProxy< TYPES >::process_event( const typename TYPES::attribute::tEvent& event )
+   template< typename GENERATOR >
+   void TProxy< GENERATOR >::process_event( const typename GENERATOR::attribute::tEvent& event )
    {
       SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
       m_attribute_processor.process( event );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tRequestData, typename... Args >
-   const comm::sequence::ID TProxy< TYPES >::request( tClient* p_client, const Args&... args )
+   const comm::sequence::ID TProxy< GENERATOR >::request( tClient* p_client, const Args&... args )
    {
       if( !is_connected( ) )
       {
@@ -497,9 +497,9 @@ namespace carpc::service::experimental::__private__ {
       return m_method_processor.template request< tRequestData >( p_client, args... );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool TProxy< TYPES >::subscribe( tClient* p_client )
+   const bool TProxy< GENERATOR >::subscribe( tClient* p_client )
    {
       if( !is_connected( ) )
       {
@@ -510,16 +510,16 @@ namespace carpc::service::experimental::__private__ {
       return m_attribute_processor.template subscribe< tAttributeData >( p_client );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool TProxy< TYPES >::unsubscribe( tClient* p_client )
+   const bool TProxy< GENERATOR >::unsubscribe( tClient* p_client )
    {
       return m_attribute_processor.template unsubscribe< tAttributeData >( p_client );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tMethodData >
-   const tMethodData* TProxy< TYPES >::get_event_data( const typename TYPES::method::tEvent& event )
+   const tMethodData* TProxy< GENERATOR >::get_event_data( const typename GENERATOR::method::tEvent& event )
    {
       if( const tMethodData* p_data = static_cast< tMethodData* >( event.data( )->ptr.get( ) ) )
          return p_data;
@@ -528,9 +528,9 @@ namespace carpc::service::experimental::__private__ {
       return nullptr;
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const tAttributeData* TProxy< TYPES >::get_event_data( const typename TYPES::attribute::tEvent& event )
+   const tAttributeData* TProxy< GENERATOR >::get_event_data( const typename GENERATOR::attribute::tEvent& event )
    {
       if( const tAttributeData* p_data = static_cast< tAttributeData* >( event.data( )->ptr.get( ) ) )
          return p_data;

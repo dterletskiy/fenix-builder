@@ -38,7 +38,7 @@ namespace carpc::service::experimental {
 
       private:
          comm::service::Name m_role = comm::service::Name::invalid;
-         _ID m_id = { };
+         _ID m_id = { }; // This field corresponds to id related to some request/response method or notification attribute 
          eType m_type = eType::UNDEFINED;
          comm::service::ID m_from;
          comm::service::ID m_to;

@@ -11,19 +11,19 @@
 
 namespace carpc::service::experimental::__private__ {
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    class TClient : public IClient
    {
-      using tProxy = TProxy< TYPES >;
-      using tClient = TClient< TYPES >;
+      using tProxy = TProxy< GENERATOR >;
+      using tClient = TClient< GENERATOR >;
 
       public:
          TClient( const carpc::async::tAsyncTypeID&, const std::string&, const bool );
          ~TClient( ) override;
 
       public:
-         virtual void process_event( const typename TYPES::method::tEvent& ) = 0;
-         virtual void process_event( const typename TYPES::attribute::tEvent& ) = 0;
+         virtual void process_event( const typename GENERATOR::method::tEvent& ) = 0;
+         virtual void process_event( const typename GENERATOR::attribute::tEvent& ) = 0;
 
       protected:
          template< typename tRequestData, typename... Args >
@@ -35,9 +35,9 @@ namespace carpc::service::experimental::__private__ {
 
       protected:
          template< typename tMethodData >
-            const tMethodData* get_event_data( const typename TYPES::method::tEvent& event );
+            const tMethodData* get_event_data( const typename GENERATOR::method::tEvent& event );
          template< typename tAttributeData >
-            const tAttributeData* get_event_data( const typename TYPES::attribute::tEvent& event );
+            const tAttributeData* get_event_data( const typename GENERATOR::attribute::tEvent& event );
 
       private:
          tProxy* proxy( ) const;
@@ -46,8 +46,8 @@ namespace carpc::service::experimental::__private__ {
 
 
 
-   template< typename TYPES >
-   TClient< TYPES >::TClient( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
+   template< typename GENERATOR >
+   TClient< GENERATOR >::TClient( const carpc::async::tAsyncTypeID& interface_type_id, const std::string& role_name, const bool is_import )
    {
       mp_proxy = tProxy::create( interface_type_id, role_name, is_import );
       mp_proxy->register_client( this );
@@ -65,8 +65,8 @@ namespace carpc::service::experimental::__private__ {
       }
    }
 
-   template< typename TYPES >
-   TClient< TYPES >::~TClient( )
+   template< typename GENERATOR >
+   TClient< GENERATOR >::~TClient( )
    {
       if( mp_proxy )
       {
@@ -76,30 +76,30 @@ namespace carpc::service::experimental::__private__ {
       }
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tRequestData, typename... Args >
-   const comm::sequence::ID TClient< TYPES >::request( tClient* p_client, const Args&... args )
+   const comm::sequence::ID TClient< GENERATOR >::request( tClient* p_client, const Args&... args )
    {
       return mp_proxy->template request< tRequestData >( this, args... );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool TClient< TYPES >::subscribe( tClient* p_client )
+   const bool TClient< GENERATOR >::subscribe( tClient* p_client )
    {
       return mp_proxy->template subscribe< tAttributeData >( this );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const bool TClient< TYPES >::unsubscribe( tClient* p_client )
+   const bool TClient< GENERATOR >::unsubscribe( tClient* p_client )
    {
       return mp_proxy->template unsubscribe< tAttributeData >( this );
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tMethodData >
-   const tMethodData* TClient< TYPES >::get_event_data( const typename TYPES::method::tEvent& event )
+   const tMethodData* TClient< GENERATOR >::get_event_data( const typename GENERATOR::method::tEvent& event )
    {
       if( const tMethodData* p_data = static_cast< tMethodData* >( event.data( )->ptr.get( ) ) )
          return p_data;
@@ -108,9 +108,9 @@ namespace carpc::service::experimental::__private__ {
       return nullptr;
    }
 
-   template< typename TYPES >
+   template< typename GENERATOR >
    template< typename tAttributeData >
-   const tAttributeData* TClient< TYPES >::get_event_data( const typename TYPES::attribute::tEvent& event )
+   const tAttributeData* TClient< GENERATOR >::get_event_data( const typename GENERATOR::attribute::tEvent& event )
    {
       if( const tAttributeData* p_data = static_cast< tAttributeData* >( event.data( )->ptr.get( ) ) )
          return p_data;
@@ -119,8 +119,8 @@ namespace carpc::service::experimental::__private__ {
       return nullptr;
    }
 
-   template< typename TYPES >
-   typename TClient< TYPES >::tProxy* TClient< TYPES >::proxy( ) const
+   template< typename GENERATOR >
+   typename TClient< GENERATOR >::tProxy* TClient< GENERATOR >::proxy( ) const
    {
       return mp_proxy;
    }
