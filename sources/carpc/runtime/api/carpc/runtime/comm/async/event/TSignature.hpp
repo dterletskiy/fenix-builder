@@ -13,7 +13,7 @@ namespace carpc::async {
    class TSignature : public IEvent::ISignature
    {
       using tSignature     = typename _Generator::Config::tSignature;
-      using tUserSignature = typename _Generator::Config::tUserSignature;
+      using tID            = typename _Generator::Config::tID;
       using tService       = typename _Generator::Config::tService;
 
       public:
@@ -28,21 +28,21 @@ namespace carpc::async {
 
       public:
          TSignature( ) = default;
-         TSignature( const tUserSignature& user_signature )
-            : m_user_signature( user_signature )
+         TSignature( const tID& id )
+            : m_id( id )
          { }
          TSignature( const TSignature& other ) = delete;
          ~TSignature( ) override = default;
-         static tSptr create( const tUserSignature& user_signature = { } )
+         static tSptr create( const tID& id = { } )
          {
-            return std::make_shared< tSignature >( user_signature );
+            return std::make_shared< tSignature >( id );
          }
 
       public:
          const std::string dbg_name( ) const override
          {
             static const std::string s_name = format_string( "type_id: ", type_id( ).c_str( ), ", " );
-            return s_name + m_user_signature.dbg_name( );
+            return s_name + m_id.dbg_name( );
          }
          const tAsyncTypeID& type_id( ) const override
          {
@@ -54,13 +54,13 @@ namespace carpc::async {
             if( other.type_id( ) != type_id( ) )
                return type_id( ) < other.type_id( );
 
-            return m_user_signature < static_cast< const tSignature& >( other ).m_user_signature;
+            return m_id < static_cast< const tSignature& >( other ).m_id;
          }
          const bool to_stream( ipc::tStream& stream ) const override
          {
             if constexpr( CARPC_IS_IPC_TYPE( tService ) )
             {
-               return ipc::serialize( stream, m_user_signature );
+               return ipc::serialize( stream, m_id );
             }
             return false;
          }
@@ -68,23 +68,23 @@ namespace carpc::async {
          {
             if constexpr( CARPC_IS_IPC_TYPE( tService ) )
             {
-               return ipc::deserialize( stream, m_user_signature );
+               return ipc::deserialize( stream, m_id );
             }
             return false;
          }
 
       public:
-         const tUserSignature& user_signature( ) const
+         const tID& id( ) const
          {
-            return m_user_signature;
+            return m_id;
          }
-         void user_signature( const tUserSignature& signature )
+         void id( const tID& value )
          {
-            m_user_signature = signature;
+            m_id = value;
          }
       private:
          // static const tAsyncTypeID ms_type_id;
-         tUserSignature m_user_signature = { };
+         tID m_id = { };
    };
 
    // template< typename _Generator >

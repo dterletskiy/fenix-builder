@@ -93,10 +93,10 @@ namespace carpc::service::experimental::__private_server__ {
    template< typename TYPES >
    bool MethodProcessor< TYPES >::pre_process( const typename TYPES::method::tEvent& event )
    {
-      const typename TYPES::method::tEventID event_id = event.info( ).id( );
-      const comm::service::ID from_id = event.info( ).from( );
-      const comm::service::ID to_id = event.info( ).to( );
-      const comm::sequence::ID seq_id = event.info( ).seq_id( );
+      const typename TYPES::method::tEventID event_id = event.id( ).id( );
+      const comm::service::ID from_id = event.id( ).from( );
+      const comm::service::ID to_id = event.id( ).to( );
+      const comm::sequence::ID seq_id = event.id( ).seq_id( );
       const auto from_context = event.context( );
 
       // @TDA-DEBUG:
@@ -150,7 +150,7 @@ namespace carpc::service::experimental::__private_server__ {
    template< typename TYPES >
    void MethodProcessor< TYPES >::process( const typename TYPES::method::tEvent& event )
    {
-      m_processing_event_id = event.info( ).id( );
+      m_processing_event_id = event.id( ).id( );
       if( true == pre_process( event ) )
          mp_server->process_request_event( event );
       m_processing_event_id.reset( );
@@ -210,7 +210,7 @@ namespace carpc::service::experimental::__private_server__ {
 
       const RequestInfo& request_info = *iterator_request_info_set;
 
-      typename TYPES::method::tEventUserSignature event_signature(
+      typename TYPES::method::tEventUserSignature event_id(
          mp_server->signature( ).role( ),
          tResponseData::ID,
          carpc::service::eType::RESPONSE,
@@ -219,7 +219,7 @@ namespace carpc::service::experimental::__private_server__ {
          request_info.client_seq_id
       );
       typename TYPES::method::tEventData event_data( std::make_shared< tResponseData >( args... ) );
-      TYPES::method::tEvent::create_send( event_signature, event_data, request_info.client_addr.context( ) );
+      TYPES::method::tEvent::create_send( event_id, event_data, request_info.client_addr.context( ) );
 
       request_info_set.erase( iterator_request_info_set );
       request_status.status = eRequestStatus::READY;
@@ -313,7 +313,7 @@ namespace carpc::service::experimental::__private_server__ {
 
       for( const auto& subscriber : subscribers )
       {
-         typename TYPES::attribute::tEventUserSignature event_signature(
+         typename TYPES::attribute::tEventUserSignature event_id(
             server.signature( ).role( ),
             tAttributeData::ID,
             carpc::service::eType::NOTIFICATION,
@@ -321,7 +321,7 @@ namespace carpc::service::experimental::__private_server__ {
             subscriber.id( )
          );
          typename TYPES::attribute::tEventData event_data( mp_data );
-         TYPES::attribute::tEvent::create_send( event_signature, event_data, subscriber.context( ) );
+         TYPES::attribute::tEvent::create_send( event_id, event_data, subscriber.context( ) );
       }
    }
 
@@ -366,9 +366,9 @@ namespace carpc::service::experimental::__private_server__ {
    template< typename TYPES >
    bool AttributeProcessor< TYPES >::process( const typename TYPES::attribute::tEvent& event )
    {
-      const typename TYPES::attribute::tEventID event_id = event.info( ).id( );
-      const carpc::service::eType event_type = event.info( ).type( );
-      const comm::service::ID from_id = event.info( ).from( );
+      const typename TYPES::attribute::tEventID event_id = event.id( ).id( );
+      const carpc::service::eType event_type = event.id( ).type( );
+      const comm::service::ID from_id = event.id( ).from( );
       const auto from_context = event.context( );
 
       if( carpc::service::eType::SUBSCRIBE == event_type )
@@ -391,7 +391,7 @@ namespace carpc::service::experimental::__private_server__ {
          }
          if( notification_status.data( ) )
          {
-            typename TYPES::attribute::tEventUserSignature event_signature(
+            typename TYPES::attribute::tEventUserSignature event_id(
                mp_server->signature( ).role( ),
                event_id,
                carpc::service::eType::NOTIFICATION,
@@ -399,7 +399,7 @@ namespace carpc::service::experimental::__private_server__ {
                from_id
             );
             typename TYPES::attribute::tEventData event_data( notification_status.data( ) );
-            TYPES::attribute::tEvent::create_send( event_signature, event_data, from_context );
+            TYPES::attribute::tEvent::create_send( event_id, event_data, from_context );
          }
       }
       else if( carpc::service::eType::UNSUBSCRIBE == event_type )
@@ -585,14 +585,14 @@ namespace carpc::service::experimental::__private__ {
    template< typename TYPES >
    void TServer< TYPES >::process_event( const typename TYPES::method::tEvent& event )
    {
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
       m_method_processor.process( event );
    }
 
    template< typename TYPES >
    void TServer< TYPES >::process_event( const typename TYPES::attribute::tEvent& event )
    {
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
       m_attribute_processor.process( event );
    }
 
@@ -636,7 +636,7 @@ namespace carpc::service::experimental::__private__ {
       if( const tRequestData* p_data = static_cast< tRequestData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for method ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for method ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 

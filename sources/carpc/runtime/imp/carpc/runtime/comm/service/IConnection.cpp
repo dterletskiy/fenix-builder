@@ -41,7 +41,7 @@ void IConnection::process_event( const ev_i::Status::Event& event )
    }
 
    const Address& address = *( event.data( ) );
-   switch( event.info( ).id( ) )
+   switch( event.id( ).id( ) )
    {
       case ev_i::eStatus::ServerConnected:
       case ev_i::eStatus::ClientConnected:

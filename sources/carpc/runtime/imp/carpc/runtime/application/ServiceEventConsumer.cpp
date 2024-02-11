@@ -29,7 +29,7 @@ ServiceEventConsumer::~ServiceEventConsumer( )
 
 void ServiceEventConsumer::process_event( const ev_i::Action::Event& event )
 {
-   const auto& id = event.info( ).id( );
+   const auto& id = event.id( ).id( );
    const carpc::service::Passport& service_passport = *(event.data( ));
    SYS_INF( "id: %s / passport: %s", ev_i::c_str( id ), service_passport.dbg_name( ).c_str( ) );
 

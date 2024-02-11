@@ -100,7 +100,7 @@ namespace carpc::service::fast::__private__ {
       if( const tResponseData* p_data = mp_proxy->template get_event_data< tResponseData >( event ) )
          return p_data;
 
-      SYS_ERR( "missing data for response/notification ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for response/notification ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 

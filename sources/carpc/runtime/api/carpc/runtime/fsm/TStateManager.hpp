@@ -317,7 +317,7 @@ namespace carpc::fsm {
          SYS_WRN( "%s: not running", m_name.c_str( ) );
          return;
       }
-      if( m_id != event.info( ).id( ) )
+      if( m_id != event.id( ).id( ) )
       {
          SYS_WRN( "%s: not my id", m_name.c_str( ) );
          return;

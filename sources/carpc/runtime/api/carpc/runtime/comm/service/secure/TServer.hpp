@@ -156,10 +156,10 @@ namespace carpc::service::secure::__private__ {
       {
          for( const auto& subscriber : pair.second )
          {
-            typename TYPES::tEventUserSignature event_signature(
+            typename TYPES::tEventUserSignature event_id(
                server.signature( ).role( ), tNotificationData::NOTIFICATION, server.id( ), subscriber.sid
             );
-            TYPES::tEvent::create_send( event_signature, event_data, application::Context( subscriber.tid, pair.first ) );
+            TYPES::tEvent::create_send( event_id, event_data, application::Context( subscriber.tid, pair.first ) );
          }
       }
    }
@@ -305,8 +305,8 @@ namespace carpc::service::secure::__private__ {
    template< typename TYPES >
    void TServer< TYPES >::process_event( const typename TYPES::tEvent& event )
    {
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
-      m_processing_event_id = event.info( ).id( );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
+      m_processing_event_id = event.id( ).id( );
 
       if( true == prepare_request( event ) )
       {
@@ -317,7 +317,7 @@ namespace carpc::service::secure::__private__ {
       }
       else
       {
-         SYS_WRN( "not processable event: %s", event.info( ).dbg_name( ).c_str( ) );
+         SYS_WRN( "not processable event: %s", event.id( ).dbg_name( ).c_str( ) );
       }
 
       m_processing_event_id.reset( );
@@ -326,10 +326,10 @@ namespace carpc::service::secure::__private__ {
    template< typename TYPES >
    bool TServer< TYPES >::prepare_request( const typename TYPES::tEvent& event )
    {
-      const typename TYPES::tEventID event_id = event.info( ).id( );
-      const comm::service::ID from_id = event.info( ).from( );
-      const comm::service::ID to_id = event.info( ).to( );
-      const comm::sequence::ID seq_id = event.info( ).seq_id( );
+      const typename TYPES::tEventID event_id = event.id( ).id( );
+      const comm::service::ID from_id = event.id( ).from( );
+      const comm::service::ID to_id = event.id( ).to( );
+      const comm::sequence::ID seq_id = event.id( ).seq_id( );
       const auto from_context = event.context( );
 
       // Find request event_id in request status map
@@ -437,18 +437,18 @@ namespace carpc::service::secure::__private__ {
 
       const RequestInfo& request_info = request_info_opt.value( );
 
-      typename TYPES::tEventUserSignature event_signature(
+      typename TYPES::tEventUserSignature event_id(
          signature( ).role( ), tResponseData::RESPONSE, id( ), request_info.client_addr.id( ), request_info.client_seq_id
       );
       typename TYPES::tEventData event_data( std::make_shared< tResponseData >( args... ) );
-      TYPES::tEvent::create_send( event_signature, event_data, request_info.client_addr.context( ) );
+      TYPES::tEvent::create_send( event_id, event_data, request_info.client_addr.context( ) );
    }
 
    template< typename TYPES >
    bool TServer< TYPES >::process_subscription( const typename TYPES::tEvent& event )
    {
-      const typename TYPES::tEventID event_id = event.info( ).id( );
-      const comm::service::ID from_id = event.info( ).from( );
+      const typename TYPES::tEventID event_id = event.id( ).id( );
+      const comm::service::ID from_id = event.id( ).from( );
       const auto from_context = event.context( );
 
       for( auto& item : TYPES::N )
@@ -471,9 +471,9 @@ namespace carpc::service::secure::__private__ {
 
             if( notification_status.data( ) )
             {
-               typename TYPES::tEventUserSignature event_signature( signature( ).role( ), item.notification, id( ), from_id );
+               typename TYPES::tEventUserSignature event_id( signature( ).role( ), item.notification, id( ), from_id );
                typename TYPES::tEventData event_data( notification_status.data( ) );
-               TYPES::tEvent::create_send( event_signature, event_data, from_context );
+               TYPES::tEvent::create_send( event_id, event_data, from_context );
             }
          }
          else if( item.unsubscribe == event_id )
@@ -524,7 +524,7 @@ namespace carpc::service::secure::__private__ {
       if( const tRequestData* p_data = static_cast< tRequestData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing request data for request ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing request data for request ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 

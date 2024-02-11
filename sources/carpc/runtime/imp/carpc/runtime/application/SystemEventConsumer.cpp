@@ -24,12 +24,12 @@ SystemEventConsumer::~SystemEventConsumer( )
 
 void SystemEventConsumer::process_event( const events::system::System::Event& event )
 {
-   SYS_INF( "id = %s", events::system::c_str( event.info( ).id( ) ) );
+   SYS_INF( "id = %s", events::system::c_str( event.id( ).id( ) ) );
 
    std::string message = "";
    if( event.data( ) ) message = event.data( )->message;
 
-   switch( event.info( ).id( ) )
+   switch( event.id( ).id( ) )
    {
       case events::system::eID::boot:
       {

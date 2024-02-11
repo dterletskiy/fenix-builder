@@ -5,28 +5,27 @@
 
 
 
-
-#define DEFINE_EVENT_BASE( scopeType, serviceType, eventType, dataType, signatureType ) \
+#define DEFINE_EVENT_BASE( scopeType, serviceType, eventType, dataType, idType ) \
    scopeType eventType { \
       class eventType##_TYPE; \
-      using Generator      = carpc::async::TGenerator< serviceType, eventType##_TYPE, dataType, signatureType >; \
+      using Generator      = carpc::async::TGenerator< serviceType, eventType##_TYPE, dataType, idType >; \
       using Event          = typename Generator::Config::tEvent; \
       using Signature      = typename Generator::Config::tSignature; \
-      using UserSignature  = typename Generator::Config::tUserSignature; \
+      using ID             = typename Generator::Config::tID; \
       using Data           = typename Generator::Config::tData; \
       using Consumer       = typename Generator::Config::tConsumer; \
    }
 
 
 
-#define DEFINE_EVENT_N( eventType, dataType, signatureType ) \
-   DEFINE_EVENT_BASE( namespace, carpc::NO_IPC, eventType, dataType, signatureType )
+#define DEFINE_EVENT_N( eventType, dataType, idType ) \
+   DEFINE_EVENT_BASE( namespace, carpc::NO_IPC, eventType, dataType, idType )
 
 #define DEFINE_EVENT_NOSIG_N( eventType, dataType ) \
    DEFINE_EVENT_N( eventType, dataType, carpc::async::simple::Signature )
 
-#define DEFINE_EVENT_NODATA_N( eventType, signatureType ) \
-   DEFINE_EVENT_N( eventType, carpc::async::tEmptyData, signatureType )
+#define DEFINE_EVENT_NODATA_N( eventType, idType ) \
+   DEFINE_EVENT_N( eventType, carpc::async::tEmptyData, idType )
 
 #define DEFINE_EVENT_NOSIG_NODATA_N( eventType ) \
    DEFINE_EVENT_N( eventType, carpc::async::tEmptyData, carpc::async::simple::Signature )
@@ -39,14 +38,14 @@
 
 
 
-#define DEFINE_IPC_EVENT_N( eventType, dataType, signatureType ) \
-   DEFINE_EVENT_BASE( namespace, carpc::IPC, eventType, dataType, signatureType )
+#define DEFINE_IPC_EVENT_N( eventType, dataType, idType ) \
+   DEFINE_EVENT_BASE( namespace, carpc::IPC, eventType, dataType, idType )
 
 #define DEFINE_IPC_EVENT_NOSIG_N( eventType, dataType ) \
    DEFINE_IPC_EVENT_N( eventType, dataType, carpc::async::simple::Signature )
 
-#define DEFINE_IPC_EVENT_NODATA_N( eventType, signatureType ) \
-   DEFINE_IPC_EVENT_N( eventType, carpc::async::tEmptyData, signatureType )
+#define DEFINE_IPC_EVENT_NODATA_N( eventType, idType ) \
+   DEFINE_IPC_EVENT_N( eventType, carpc::async::tEmptyData, idType )
 
 #define DEFINE_IPC_EVENT_NOSIG_NODATA_N( eventType ) \
    DEFINE_IPC_EVENT_N( eventType, carpc::async::tEmptyData, carpc::async::simple::Signature )
@@ -59,14 +58,14 @@
 
 
 
-#define DEFINE_EVENT_S( eventType, dataType, signatureType ) \
-   DEFINE_EVENT_BASE( struct, carpc::NO_IPC, eventType, dataType, signatureType )
+#define DEFINE_EVENT_S( eventType, dataType, idType ) \
+   DEFINE_EVENT_BASE( struct, carpc::NO_IPC, eventType, dataType, idType )
 
 #define DEFINE_EVENT_NOSIG_S( eventType, dataType ) \
    DEFINE_EVENT_S( eventType, dataType, carpc::async::simple::Signature )
 
-#define DEFINE_EVENT_NODATA_S( eventType, signatureType ) \
-   DEFINE_EVENT_S( eventType, carpc::async::tEmptyData, signatureType )
+#define DEFINE_EVENT_NODATA_S( eventType, idType ) \
+   DEFINE_EVENT_S( eventType, carpc::async::tEmptyData, idType )
 
 #define DEFINE_EVENT_NOSIG_NODATA_S( eventType ) \
    DEFINE_EVENT_S( eventType, carpc::async::tEmptyData, carpc::async::simple::Signature )
@@ -79,14 +78,14 @@
 
 
 
-#define DEFINE_IPC_EVENT_S( eventType, dataType, signatureType ) \
-   DEFINE_EVENT_BASE( struct, carpc::IPC, eventType, dataType, signatureType )
+#define DEFINE_IPC_EVENT_S( eventType, dataType, idType ) \
+   DEFINE_EVENT_BASE( struct, carpc::IPC, eventType, dataType, idType )
 
 #define DEFINE_IPC_EVENT_NOSIG_S( eventType, dataType ) \
    DEFINE_IPC_EVENT_S( eventType, dataType, carpc::async::simple::Signature )
 
-#define DEFINE_IPC_EVENT_NODATA_S( eventType, signatureType ) \
-   DEFINE_IPC_EVENT_S( eventType, carpc::async::tEmptyData, signatureType )
+#define DEFINE_IPC_EVENT_NODATA_S( eventType, idType ) \
+   DEFINE_IPC_EVENT_S( eventType, carpc::async::tEmptyData, idType )
 
 #define DEFINE_IPC_EVENT_NOSIG_NODATA_S( eventType ) \
    DEFINE_IPC_EVENT_S( eventType, carpc::async::tEmptyData, carpc::async::simple::Signature )

@@ -113,7 +113,7 @@ namespace carpc::service::experimental::__private_proxy__ {
       }
 
       // Preparing and sending request event
-      typename TYPES::method::tEventUserSignature event_signature(
+      typename TYPES::method::tEventUserSignature event_id(
             mp_proxy->signature( ).role( ),
             tRequestData::ID,
             carpc::service::eType::REQUEST,
@@ -122,7 +122,7 @@ namespace carpc::service::experimental::__private_proxy__ {
             m_seq_id
          );
       typename TYPES::method::tEventData data( std::make_shared< tRequestData >( args... ) );
-      TYPES::method::tEvent::create_send( event_signature, data, mp_proxy->server( ).context( ) );
+      TYPES::method::tEvent::create_send( event_id, data, mp_proxy->server( ).context( ) );
 
       return m_seq_id;
    }
@@ -130,8 +130,8 @@ namespace carpc::service::experimental::__private_proxy__ {
    template< typename TYPES >
    const bool MethodProcessor< TYPES >::process( const typename TYPES::method::tEvent& event )
    {
-      const typename TYPES::method::tEventID event_id = event.info( ).id( );
-      const comm::sequence::ID seq_id = event.info( ).seq_id( );
+      const typename TYPES::method::tEventID event_id = event.id( ).id( );
+      const comm::sequence::ID seq_id = event.id( ).seq_id( );
 
       auto event_id_iterator = m_map.find( event_id );
       if( m_map.end( ) == event_id_iterator )
@@ -338,7 +338,7 @@ namespace carpc::service::experimental::__private_proxy__ {
    template< typename TYPES >
    const bool AttributeProcessor< TYPES >::process( const typename TYPES::attribute::tEvent& event )
    {
-      const typename TYPES::attribute::tEventID event_id = event.info( ).id( );
+      const typename TYPES::attribute::tEventID event_id = event.id( ).id( );
 
       auto event_id_iterator = m_map.find( event_id );
       if( m_map.end( ) == event_id_iterator )
@@ -473,14 +473,14 @@ namespace carpc::service::experimental::__private__ {
    template< typename TYPES >
    void TProxy< TYPES >::process_event( const typename TYPES::method::tEvent& event )
    {
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
       m_method_processor.process( event );
    }
 
    template< typename TYPES >
    void TProxy< TYPES >::process_event( const typename TYPES::attribute::tEvent& event )
    {
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
       m_attribute_processor.process( event );
    }
 
@@ -524,7 +524,7 @@ namespace carpc::service::experimental::__private__ {
       if( const tMethodData* p_data = static_cast< tMethodData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for method ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for method ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 
@@ -535,7 +535,7 @@ namespace carpc::service::experimental::__private__ {
       if( const tAttributeData* p_data = static_cast< tAttributeData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for attribute ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for attribute ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 

@@ -127,7 +127,7 @@ namespace carpc::service::secure::__private__ {
          }
       }
 
-      typename TYPES::tEventUserSignature event_signature(
+      typename TYPES::tEventUserSignature event_id(
             mp_proxy->signature( ).role( ),
             tRequestData::REQUEST,
             mp_proxy->id( ),
@@ -135,7 +135,7 @@ namespace carpc::service::secure::__private__ {
             m_seq_id
          );
       typename TYPES::tEventData data( std::make_shared< tRequestData >( args... ) );
-      TYPES::tEvent::create_send( event_signature, data, mp_proxy->server( ).context( ) );
+      TYPES::tEvent::create_send( event_id, data, mp_proxy->server( ).context( ) );
 
       return m_seq_id;
    }
@@ -143,8 +143,8 @@ namespace carpc::service::secure::__private__ {
    template< typename TYPES >
    const bool RequestProcessor< TYPES >::response( const typename TYPES::tEvent& event )
    {
-      const typename TYPES::tEventID event_id = event.info( ).id( );
-      const comm::sequence::ID seq_id = event.info( ).seq_id( );
+      const typename TYPES::tEventID event_id = event.id( ).id( );
+      const comm::sequence::ID seq_id = event.id( ).seq_id( );
 
       for( auto& item : TYPES::RR )
       {
@@ -359,7 +359,7 @@ namespace carpc::service::secure::__private__ {
    template< typename TYPES >
    const bool NotificationProcessor< TYPES >::notification( const typename TYPES::tEvent& event )
    {
-      const typename TYPES::tEventID event_id = event.info( ).id( );
+      const typename TYPES::tEventID event_id = event.id( ).id( );
 
       auto event_id_iterator = m_map.find( event_id );
       if( m_map.end( ) == event_id_iterator )
@@ -488,13 +488,13 @@ namespace carpc::service::secure::__private__ {
    template< typename TYPES >
    void TProxy< TYPES >::process_event( const typename TYPES::tEvent& event )
    {
-      const typename TYPES::tEventID event_id = event.info( ).id( );
-      const comm::service::ID from_id = event.info( ).from( );
-      const comm::service::ID to_id = event.info( ).to( );
-      const comm::sequence::ID seq_id = event.info( ).seq_id( );
+      const typename TYPES::tEventID event_id = event.id( ).id( );
+      const comm::service::ID from_id = event.id( ).from( );
+      const comm::service::ID to_id = event.id( ).to( );
+      const comm::sequence::ID seq_id = event.id( ).seq_id( );
       const auto from_context = event.context( );
 
-      SYS_VRB( "processing event: %s", event.info( ).dbg_name( ).c_str( ) );
+      SYS_VRB( "processing event: %s", event.id( ).dbg_name( ).c_str( ) );
 
       if( true == m_request_processor.response( event ) )
          return;
@@ -544,7 +544,7 @@ namespace carpc::service::secure::__private__ {
       if( const tResponseData* p_data = static_cast< tResponseData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for response/notification ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for response/notification ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 

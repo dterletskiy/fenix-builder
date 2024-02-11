@@ -33,7 +33,9 @@ Component::~Component( )
 void Component::process_boot( const std::string& command )
 {
    MSG_DBG( "%s", command.c_str( ) );
-   events::SimpleNoSigNoData::Event::create_send( );
+   // events::SimpleNoSigNoData::Event::create_send( );
+
+   events::SimpleIdSig::Event::create( )->signature( { events::eAppEventID::SHUTDOWN } )->data( { "shutdown message" } )->send( );
 }
 
 void Component::process_shutdown( carpc::callback::tBlocker blocker )

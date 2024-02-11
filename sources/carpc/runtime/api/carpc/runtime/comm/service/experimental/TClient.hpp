@@ -104,7 +104,7 @@ namespace carpc::service::experimental::__private__ {
       if( const tMethodData* p_data = static_cast< tMethodData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for method ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for method ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 
@@ -115,7 +115,7 @@ namespace carpc::service::experimental::__private__ {
       if( const tAttributeData* p_data = static_cast< tAttributeData* >( event.data( )->ptr.get( ) ) )
          return p_data;
 
-      SYS_ERR( "missing data for attribute ID: %s", event.info( ).id( ).c_str( ) );
+      SYS_ERR( "missing data for attribute ID: %s", event.id( ).id( ).c_str( ) );
       return nullptr;
    }
 
